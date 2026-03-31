@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swagbuck - Create PIN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0000FF;
+            min-height: 100vh;
+            color: white;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        /* Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0000FF 0%, #0000CC 50%, #0000FF 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .profile-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .profile-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            height: calc(100vh - 90px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Profile Photo Section */
+        .profile-section {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .photo-container {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+        }
+
+        .photo-container:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .photo-container.has-image img {
+            display: block;
+        }
+
+        .photo-container.has-image .camera-icon {
+            display: none;
+        }
+
+        .camera-icon {
+            width: 40px;
+            height: 40px;
+            opacity: 0.9;
+        }
+
+        .upload-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .upload-badge:hover {
+            transform: scale(1.1);
+        }
+
+        .upload-badge svg {
+            width: 16px;
+            height: 16px;
+            color: #0000FF;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* Title Section */
+        .title-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .main-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            opacity: 0.85;
+            font-weight: 500;
+        }
+
+        /* PIN Indicators */
+        .pin-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .pin-dot {
+            width: 60px;
+            height: 60px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .pin-dot.filled {
+            background: white;
+            border-color: white;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .pin-dot.filled::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: #0000FF;
+            border-radius: 50%;
+        }
+
+        .pin-dot.error {
+            border-color: #ff4444;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Divider */
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+        }
+
+        /* Keypad */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .key {
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .key:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .key:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .key.special {
+            background: white;
+            color: #0000FF;
+        }
+
+        .key.special:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+
+        .key.special:active {
+            transform: scale(0.95);
+        }
+
+        .key.fingerprint svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .key.delete svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Forgot PIN Section */
+        .forgot-section {
+            text-align: center;
+            margin-top: auto;
+            padding-bottom: 20px;
+        }
+
+        .forgot-text {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .reset-link {
+            color: white;
+            font-weight: 700;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 0.95rem;
+            background: none;
+            border: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .reset-link:hover {
+            opacity: 0.8;
+        }
+
+        /* Confirm PIN Section */
+        .confirm-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .confirm-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Success Modal */
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .success-modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .success-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            color: #0000FF;
+            max-width: 300px;
+            width: 90%;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .success-text {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        .success-btn {
+            background: #0000FF;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .success-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Error Toast */
+        .toast {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(255, 68, 68, 0.95);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 380px) {
+            .key {
+                font-size: 1.3rem;
+            }
+            
+            .pin-dot {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .photo-container {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">PINs do not match</div>
+
+    <!-- Header -->
+    <div class="header">
+        <button class="back-btn" onclick="goBack()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </button>
+        <span class="header-title" id="headerTitle">Create PIN</span>
+        <button class="profile-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Profile Photo -->
+        <div class="profile-section">
+            <div class="photo-container" id="photoContainer" onclick="document.getElementById('fileInput').click()">
+                <svg class="camera-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+                <img id="profileImage" alt="Profile">
+            </div>
+            <div class="upload-badge" onclick="event.stopPropagation(); document.getElementById('fileInput').click()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="19" x2="12" y2="5"></line>
+                    <polyline points="5 12 12 5 19 12"></polyline>
+                </svg>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" onchange="handleImageUpload(event)">
+        </div>
+
+        <!-- Create PIN Section -->
+        <div class="pin-section" id="createPinSection">
+            <div class="title-section">
+                <h1 class="main-title">Enter Your Passcode</h1>
+                <p class="subtitle">Create a 4-digit PIN for your wallet</p>
+            </div>
+
+            <div class="pin-container">
+                <div class="pin-dot" id="dot1"></div>
+                <div class="pin-dot" id="dot2"></div>
+                <div class="pin-dot" id="dot3"></div>
+                <div class="pin-dot" id="dot4"></div>
+            </div>
+        </div>
+
+        <!-- Confirm PIN Section -->
+        <div class="confirm-section" id="confirmPinSection">
+            <div class="title-section">
+                <h1 class="main-title">Confirm Passcode</h1>
+                <p class="subtitle">Re-enter your 4-digit PIN</p>
+            </div>
+
+            <div class="pin-container">
+                <div class="pin-dot" id="confirmDot1"></div>
+                <div class="pin-dot" id="confirmDot2"></div>
+                <div class="pin-dot" id="confirmDot3"></div>
+                <div class="pin-dot" id="confirmDot4"></div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Keypad -->
+        <div class="keypad">
+            <button class="key" onclick="pressKey(1)">1</button>
+            <button class="key" onclick="pressKey(2)">2</button>
+            <button class="key" onclick="pressKey(3)">3</button>
+            <button class="key" onclick="pressKey(4)">4</button>
+            <button class="key" onclick="pressKey(5)">5</button>
+            <button class="key" onclick="pressKey(6)">6</button>
+            <button class="key" onclick="pressKey(7)">7</button>
+            <button class="key" onclick="pressKey(8)">8</button>
+            <button class="key" onclick="pressKey(9)">9</button>
+            <button class="key" onclick="pressKey(0)">0</button>
+            <button class="key special fingerprint" onclick="useFingerprint()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm0 2a8 8 0 0 0-8 8c0 4.418 3.582 8 8 8s8-3.582 8-8-3.582-8-8-8z"/>
+                    <path d="M12 6a6 6 0 0 1 6 6"/>
+                    <path d="M12 10a2 2 0 0 1 2 2"/>
+                    <path d="M12 14v4"/>
+                    <path d="M8 12v4"/>
+                    <path d="M16 12v4"/>
+                </svg>
+            </button>
+            <button class="key special delete" onclick="deleteKey()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Forgot PIN -->
+        <div class="forgot-section">
+            <p class="forgot-text">Forgotten your passcode?</p>
+            <button class="reset-link" onclick="resetPIN()">Reset passcode</button>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="success-icon">🎉</div>
+            <h2 class="success-title">PIN Created!</h2>
+            <p class="success-text">Your wallet is now secure. Welcome to Swagbuck!</p>
+            <button class="success-btn" onclick="goToDashboard()">Go to Dashboard</button>
+        </div>
+    </div>
+
+    <script>
+        let currentPIN = "";
+        let confirmPIN = "";
+        let isConfirming = false;
+        const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+
+        // Initialize
+        window.onload = function() {
+            // Check if user came from signup
+            if (!userData.email) {
+                window.location.href = "signup.html";
+            }
+        };
+
+        // Handle keypad press
+        function pressKey(num) {
+            if (isConfirming) {
+                if (confirmPIN.length < 4) {
+                    confirmPIN += num;
+                    updateConfirmDots();
+                    
+                    if (confirmPIN.length === 4) {
+                        setTimeout(validatePINs, 200);
+                    }
+                }
+            } else {
+                if (currentPIN.length < 4) {
+                    currentPIN += num;
+                    updateDots();
+                    
+                    if (currentPIN.length === 4) {
+                        setTimeout(showConfirmSection, 200);
+                    }
+                }
+            }
+        }
+
+        // Update PIN dots
+        function updateDots() {
+            for (let i = 1; i <= 4; i++) {
+                const dot = document.getElementById(`dot${i}`);
+                if (i <= currentPIN.length) {
+                    dot.classList.add('filled');
+                } else {
+                    dot.classList.remove('filled');
+                }
+            }
+        }
+
+        // Update confirm PIN dots
+        function updateConfirmDots() {
+            for (let i = 1; i <= 4; i++) {
+                const dot = document.getElementById(`confirmDot${i}`);
+                if (i <= confirmPIN.length) {
+                    dot.classList.add('filled');
+                } else {
+                    dot.classList.remove('filled');
+                }
+            }
+        }
+
+        // Delete last digit
+        function deleteKey() {
+            if (isConfirming) {
+                confirmPIN = confirmPIN.slice(0, -1);
+                updateConfirmDots();
+                clearError();
+            } else {
+                currentPIN = currentPIN.slice(0, -1);
+                updateDots();
+            }
+        }
+
+        // Show confirm PIN section
+        function showConfirmSection() {
+            isConfirming = true;
+            document.getElementById('createPinSection').style.display = 'none';
+            document.getElementById('confirmPinSection').classList.add('active');
+            document.getElementById('headerTitle').textContent = 'Confirm PIN';
+        }
+
+        // Validate PINs match
+        function validatePINs() {
+ 
