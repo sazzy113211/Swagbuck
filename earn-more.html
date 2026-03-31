@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swagbuck - Earn More</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            padding-bottom: 90px;
+            color: #1a1a1a;
+        }
+
+        /* Header */
+        .header {
+            background: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+
+        .back-btn:hover {
+            background: #f3f4f6;
+            color: #111;
+        }
+
+        .header-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .header-spacer {
+            width: 40px;
+        }
+
+        /* Main Container */
+        .container {
+            padding: 20px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .referral-hero {
+            background: linear-gradient(135deg, #0000FF 0%, #0044CC 100%);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            text-align: center;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .referral-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .hero-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .hero-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .hero-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .earnings-highlight {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .earnings-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+
+        .earnings-amount {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* Referral Code Section */
+        .code-section {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+        }
+
+        .code-label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .referral-code {
+            background: #f3f4f6;
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0000FF;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            font-family: 'Courier New', monospace;
+            border: 2px dashed #0000FF;
+        }
+
+        .code-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .code-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .code-btn-primary {
+            background: #0000FF;
+            color: white;
+        }
+
+        .code-btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* How it Works */
+        .how-it-works {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            background: #0000FF;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: 4px;
+        }
+
+        .step-content p {
+            font-size: 0.85rem;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .step-bonus {
+            color: #4ade80;
+            font-weight: 600;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0000FF;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        /* Share Options */
+        .share-section {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .share-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .share-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .share-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            border: none;
+        }
+
+        .share-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .share-whatsapp { background: #dcfce7; }
+        .share-telegram { background: #e0f2fe; }
+        .share-twitter { background: #dbeafe; }
+        .share-more { background: #f3f4f6; }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 24px;
+            border-top: 1px solid #e5e7eb;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 6px 16px;
+            color: #9ca3af;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            color: #6b7280;
+        }
+
+        .nav-item.active {
+            color: #111;
+        }
+
+        .nav-icon {
+            font-size: 1.3rem;
+        }
+
+        .nav-label {
+            font-size: 0.65rem;
+            font-weight: 400;
+        }
+
+        .nav-item.center {
+            background: #111;
+            color: #fff;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -24px;
+            border: 4px solid #f5f7fa;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #111;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <button class="back-btn" onclick="goBack()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </button>
+        <span class="header-title">Earn More</span>
+        <div class="header-spacer"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero -->
+        <div class="referral-hero">
+            <div class="hero-icon">🎁</div>
+            <h1 class="hero-title">Refer & Earn</h1>
+            <p class="hero-subtitle">Invite friends and earn £300 for each referral!</p>
+            
+            <div class="earnings-highlight">
+                <div class="earnings-label">Total Referral Earnings</div>
+                <div class="earnings-amount" id="totalEarnings">£0</div>
+            </div>
+        </div>
+
+        <!-- Referral Code -->
+        <div class="code-section">
+            <div class="code-label">Your Unique Referral Code</div>
+            <div class="referral-code" id="referralCode">LOADING...</div>
+            <div class="code-actions">
+                <button class="code-btn code-btn-primary" onclick="copyCode()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    Copy
+                </button>
+                <button class="code-btn code-btn-secondary" onclick="shareCode()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                    Share
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-value" id="referralCount">0</div>
+                <div class="stat-label">Total Referrals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="pendingAmount">£0</div>
+                <div class="stat-label">Pending Rewards</div>
+            </div>
+        </div>
+
+        <!-- How it Works -->
+        <div class="how-it-works">
+            <h3 class="section-title">How It Works</h3>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Share Your Code</h4>
+                    <p>Share your unique referral code with friends and family</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>They Sign Up</h4>
+                    <p>They create an account using your code and get <span class="step-bonus">£200 FREE</span></p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>You Earn</h4>
+                    <p>You receive <span class="step-bonus">£300</span> for each successful referral</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Share Options -->
+        <div class="share-section">
+            <h3 class="share-title">Share Via</h3>
+            <div class="share-grid">
+                <button class="share-btn share-whatsapp" onclick="shareWhatsApp()">💬</button>
+                <button class="share-btn share-telegram" onclick="shareTelegram()">✈️</button>
+                <button class="share-btn share-twitter" onclick="shareTwitter()">🐦</button>
+                <button class="share-btn share-more" onclick="shareMore()">📋</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">Copied to clipboard!</div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="dashboard.html" class="nav-item">
+            <span class="nav-icon">💼</span>
+            <span class="nav-label">Wallet</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">👥</span>
+            <span class="nav-label">Social</span>
+        </a>
+        <a href="#" class="nav-item center">
+            <span class="nav-icon">🛒</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">Markets</span>
+        </a>
+        <a href="#" class="nav-item active">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label">Settings</span>
+        </a>
+    </nav>
+
+    <script>
+        let userCode = '';
+        let userData = {};
+
+        window.onload = function() {
+            loadUserData();
+            calculateEarnings();
+        };
+
+        function loadUserData() {
+            userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            userCode = userData.myReferralCode || 'SWAG0000';
+            document.getElementById('referralCode').textContent = userCode;
+        }
+
+        function calculateEarnings() {
+            // Get pending rewards
+            const pendingRewards = JSON.parse(localStorage.getItem('pendingRewards') || '[]');
+            const pendingTotal = pendingRewards.reduce((sum, r) => sum + r.amount, 0);
+            
+            // Get user's referral data
+            const referrers = JSON.parse(localStorage.getItem('referrers') || '[]');
+            const myReferral = referrers.find(r => r.code === userCode);
+            
+            const totalEarned = myReferral ? myReferral.totalEarned : 0;
+            const referralCount = myReferral ? myReferral.referralCount : 0;
+            
+            document.getElementById('totalEarnings').textContent = `£${totalEarned}`;
+            document.getElementById('referralCount').textContent = referralCount;
+            document.getElementById('pendingAmount').textContent = `£${pendingTotal}`;
+            
+            // Add pending to main balance if any
+            if (pendingTotal > 0) {
+                let currentBalance = parseFloat(localStorage.getItem('userBalance') || '0');
+                currentBalance += pendingTotal;
+                localStorage.setItem('userBalance', currentBalance.toString());
+                localStorage.removeItem('pendingRewards');
+                
+                // Update display
+                setTimeout(() => {
+                    document.getElementById('pendingAmount').textContent = '£0';
+                    showToast(`£${pendingTotal} added to your balance!`);
+                }, 1000);
+            }
+        }
+
+        function copyCode() {
+            navigator.clipboard.writeText(userCode).then(() => {
+                showToast('Code copied to clipboard!');
+            });
+        }
+
+        function shareCode() {
+            const shareText = `Join me on Swagbuck and get £200 FREE! Use my code: ${userCode}\n\nSign up: ${window.location.origin}/signup.html?ref=${userCode}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Join Swagbuck',
+                    text: shareText
+                });
+            } else {
+                navigator.clipboard.writeText(shareText);
+                showToast('Share link copied!');
+            }
+        }
+
+        function shareWhatsApp() {
+            const text = `Join me on Swagbuck and get £200 FREE! Use my code: ${userCode}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function shareTelegram() {
+            const text = `Join me on Swagbuck and get £200 FREE! Use my code: ${userCode}`;
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.origin)}&text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function shareTwitter() {
+            const text = `Join me on Swagbuck and get £200 FREE! Use my code: ${userCode}`;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function shareMore() {
+            shareCode();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

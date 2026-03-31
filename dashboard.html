@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swagbuck - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            padding-bottom: 90px;
+            color: #1a1a1a;
+        }
+
+        /* Activity Ticker - VERY SLOW */
+        .activity-ticker {
+            background: #1a1a2e;
+            color: #fff;
+            padding: 10px 0;
+            font-size: 0.8rem;
+            overflow: hidden;
+            white-space: nowrap;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .ticker-content {
+            display: inline-block;
+            animation: scroll 300s linear infinite;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .ticker-item {
+            display: inline-block;
+            padding: 0 30px;
+            opacity: 0.9;
+        }
+
+        .ticker-dot {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: #4ade80;
+            border-radius: 50%;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .ticker-name {
+            color: #60a5fa;
+            font-weight: 500;
+        }
+
+        .ticker-amount {
+            color: #4ade80;
+            font-weight: 500;
+        }
+
+        /* Header */
+        .header {
+            background: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 38px;
+            z-index: 100;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+
+        .menu-btn:hover {
+            background: #f3f4f6;
+            color: #111;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #111;
+        }
+
+        .header-profile {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .header-profile:hover {
+            transform: scale(1.05);
+        }
+
+        #headerProfileImg {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e5e7eb;
+            display: none;
+        }
+
+        #headerProfilePlaceholder {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #0000FF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* Main Container */
+        .container {
+            padding: 16px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* User Welcome */
+        .user-welcome {
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+
+        .welcome-text {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 2px;
+            font-weight: 400;
+        }
+
+        .user-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #111;
+        }
+
+        /* Balance Card - FLAT */
+        .balance-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .balance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .balance-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .hide-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .balance-amount {
+            font-size: 1.75rem;
+            font-weight: 400;
+            color: #111;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .balance-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            text-align: center;
+        }
+
+        .action-btn-primary {
+            background: #111;
+            color: #fff;
+        }
+
+        .action-btn-primary:hover {
+            background: #333;
+        }
+
+        .action-btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+        }
+
+        .action-btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .quick-action {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .quick-action:hover {
+            border-color: #d1d5db;
+            background: #fafafa;
+        }
+
+        .action-icon-wrap {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .action-icon-wrap.pink { background: #fdf2f8; }
+        .action-icon-wrap.orange { background: #fff7ed; }
+        .action-icon-wrap.green { background: #f0fdf4; }
+
+        .action-label {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: #374151;
+            text-align: center;
+        }
+
+        /* Services Section */
+        .services-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #111;
+        }
+
+        .see-all {
+            color: #6b7280;
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .service-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            padding: 8px 4px;
+            border-radius: 8px;
+        }
+
+        .service-item:hover {
+            background: #f9fafb;
+        }
+
+        .service-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .service-icon.blue { background: #eff6ff; }
+        .service-icon.cyan { background: #ecfeff; }
+        .service-icon.yellow { background: #fefce8; }
+        .service-icon.purple { background: #faf5ff; }
+        .service-icon.red { background: #fef2f2; }
+        .service-icon.indigo { background: #eef2ff; }
+        .service-icon.teal { background: #f0fdfa; }
+        .service-icon.amber { background: #fffbeb; }
+
+        .service-label {
+            font-size: 0.65rem;
+            font-weight: 400;
+            color: #6b7280;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        /* Image Carousel */
+        .carousel-section {
+            margin-bottom: 16px;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .carousel-track {
+            display: flex;
+            animation: carousel 25s linear infinite;
+        }
+
+        @keyframes carousel {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .carousel-item {
+            width: 260px;
+            height: 140px;
+            margin-right: 12px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.6));
+        }
+
+        .carousel-title {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .carousel-desc {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* Transactions - EMPTY */
+        .transactions-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+        }
+
+        .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        .empty-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        .empty-text {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 24px;
+            border-top: 1px solid #e5e7eb;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 6px 16px;
+            color: #9ca3af;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: #111;
+        }
+
+        .nav-icon {
+            font-size: 1.3rem;
+        }
+
+        .nav-label {
+            font-size: 0.65rem;
+            font-weight: 400;
+        }
+
+        .nav-item.center {
+            background: #111;
+            color: #fff;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -24px;
+            border: 4px solid #f5f7fa;
+        }
+
+        /* Chat Float */
+        .chat-float {
+            position: fixed;
+            bottom: 90px;
+            right: 16px;
+            width: 50px;
+            height: 50px;
+            background: #111;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            z-index: 99;
+        }
+    </style>
+</head>
+<body>
+    <!-- Activity Ticker -->
+    <div class="activity-ticker">
+        <div class="ticker-content" id="tickerContent"></div>
+    </div>
+
+    <!-- Header with Profile -->
+    <div class="header">
+        <button class="menu-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+        <span class="logo">Swagbuck</span>
+        <div class="header-profile" id="headerProfile" onclick="goToProfile()">
+            <img id="headerProfileImg" src="" alt="Profile">
+            <div id="headerProfilePlaceholder">
+                <span id="profileInitial">U</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- User Welcome -->
+        <div class="user-welcome">
+            <p class="welcome-text">Good afternoon,</p>
+            <h2 class="user-name" id="userName">User</h2>
+        </div>
+
+        <!-- Balance Card -->
+        <div class="balance-card">
+            <div class="balance-header">
+                <span class="balance-label">Available Balance</span>
+                <button class="hide-btn" onclick="toggleBalance()">
+                    <svg id="eyeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
+            </div>
+            <div class="balance-amount" id="balanceAmount">£0.00</div>
+            <div class="balance-actions">
+                <button class="action-btn action-btn-primary">Add Funds</button>
+                <button class="action-btn action-btn-secondary">Withdraw</button>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="quick-action" onclick="handleAction('BPC')">
+                <div class="action-icon-wrap pink">🛍️</div>
+                <span class="action-label">Buy BPC</span>
+            </button>
+            <button class="quick-action" onclick="handleAction('International Call')">
+                <div class="action-icon-wrap orange">📞</div>
+                <span class="action-label">International Call</span>
+            </button>
+            <button class="quick-action" onclick="handleAction('WiFi Recharge')">
+                <div class="action-icon-wrap green">📶</div>
+                <span class="action-label">WiFi Recharge</span>
+            </button>
+        </div>
+
+        <!-- Services -->
+        <div class="services-section">
+            <div class="section-header">
+                <h3 class="section-title">More Services</h3>
+                <a href="#" class="see-all">See all →</a>
+            </div>
+            <div class="services-grid">
+                <div class="service-item" onclick="handleAction('Support')">
+                    <div class="service-icon blue">📡</div>
+                    <span class="service-label">Support</span>
+                </div>
+                <div class="service-item" onclick="handleAction('Group')">
+                    <div class="service-icon cyan">🌐</div>
+                    <span class="service-label">Group</span>
+                </div>
+                <div class="service-item" onclick="handleAction('Earn More')">
+                    <div class="service-icon yellow">💰</div>
+                    <span class="service-label">Earn More</span>
+                </div>
+                <div class="service-item" onclick="handleAction('Profile')">
+                    <div class="service-icon purple">👤</div>
+                    <span class="service-label">Profile</span>
+                </div>
+            </div>
+            <div class="services-grid" style="margin-top: 12px;">
+                <div class="service-item" onclick="handleAction('Gift Cards')">
+                    <div class="service-icon red">🎁</div>
+                    <span class="service-label">Gift Cards</span>
+                </div>
+                <div class="service-item" onclick="handleAction('Virtual Games')">
+                    <div class="service-icon indigo">🎮</div>
+                    <span class="service-label">Virtual Games</span>
+                </div>
+                <div class="service-item" onclick="handleAction('Virtual Card')">
+                    <div class="service-icon teal">💳</div>
+                    <span class="service-label">Virtual Card</span>
+                </div>
+                <div class="service-item" onclick="handleAction('Cryptocurrency')">
+                    <div class="service-icon amber">₿</div>
+                    <span class="service-label">Buy Crypto</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Carousel -->
+        <div class="carousel-section">
+            <div class="carousel-track" id="carouselTrack">
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1577563908411-5077b6dc7624?w=400&h=300&fit=crop" alt="International Calls">
+                    <div class="carousel-overlay">
+                        <div class="carousel-title">International Calls</div>
+                        <div class="carousel-desc">50+ countries</div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=400&h=300&fit=crop" alt="WiFi Router">
+                    <div class="carousel-overlay">
+                        <div class="carousel-title">WiFi Recharge</div>
+                        <div class="carousel-desc">Instant top-up</div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&h=300&fit=crop" alt="Gift Cards">
+                    <div class="carousel-overlay">
+                        <div class="carousel-title">Gift Cards</div>
+                        <div class="carousel-desc">500+ brands</div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=400&h=300&fit=crop" alt="Bitcoin">
+                    <div class="carousel-overlay">
+                        <div class="carousel-title">Buy Crypto</div>
+                        <div class="carousel-desc">BTC, ETH, USDT</div>
+                    </div>
+                </div>
+                <!-- Duplicates for loop -->
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1577563908411-5077b6dc7624?w=400&h=300&fit=crop" alt="International Calls">
+                    <div class="carousel-overlay">
+                        <div class="carousel-title">International Calls</div>
+                        <div class="carousel-desc">50+ countries</div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=400&h=300&fit=crop" alt="WiFi Router">
+                    <div class="carousel-overlay">
+                        <div class="carousel-title">WiFi Recharge</div>
+                        <div class="carousel-desc">Instant top-up</div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&h=300&fit=crop" alt="Gift Cards">
+                    <div class="carousel-overlay">
+                        <div class="carousel-title">Gift Cards</div>
+                        <div class="carousel-desc">500+ brands</div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=400&h=300&fit=crop" alt="Bitcoin">
+                    <div class="carousel-overlay">
+                        <div class="carousel-title">Buy Crypto</div>
+                        <div class="carousel-desc">BTC, ETH, USDT</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity - EMPTY -->
+        <div class="transactions-section">
+            <div class="section-header">
+                <h3 class="section-title">Recent Activity</h3>
+                <a href="#" class="see-all">View All →</a>
+            </div>
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <div class="empty-title">No activity yet</div>
+                <div class="empty-text">Start earning to see your transactions here</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Button -->
+    <div class="chat-float">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+        </svg>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="setActive(this)">
+            <span class="nav-icon">💼</span>
+            <span class="nav-label">Wallet</span>
+        </div>
+        <div class="nav-item" onclick="setActive(this)">
+            <span class="nav-icon">👥</span>
+            <span class="nav-label">Social</span>
+        </div>
+        <div class="nav-item center" onclick="handleAction('Shop')">
+            <span class="nav-icon">🛒</span>
+        </div>
+        <div class="nav-item" onclick="setActive(this)">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">Markets</span>
+        </div>
+        <div class="nav-item" onclick="setActive(this)">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label">Settings</span>
+        </div>
+    </nav>
+
+    <script>
+        // Names database
+        const names = [
+            "James", "Mary", "Robert", "Patricia", "John", "Jennifer", "Michael", "Linda", 
+            "David", "Elizabeth", "William", "Barbara", "Richard", "Susan", "Joseph", "Jessica",
+            "Thomas", "Sarah", "Charles", "Karen", "Christopher", "Nancy", "Daniel", "Lisa",
+            "Matthew", "Betty", "Anthony", "Margaret", "Mark", "Sandra", "Donald", "Ashley",
+            "Steven", "Kimberly", "Paul", "Emily", "Andrew", "Donna", "Joshua", "Michelle",
+            "Kenneth", "Dorothy", "Kevin", "Carol", "Brian", "Amanda", "George", "Melissa",
+            "Edward", "Deborah", "Ronald", "Stephanie", "Timothy", "Rebecca", "Jason", "Sharon",
+            "Jeffrey", "Laura", "Ryan", "Cynthia", "Jacob", "Kathleen", "Gary", "Amy",
+            "Nicholas", "Shirley", "Eric", "Angela", "Jonathan", "Helen", "Stephen", "Anna",
+            "Larry", "Brenda", "Justin", "Pamela", "Scott", "Nicole", "Brandon", "Emma",
+            "Benjamin", "Samantha", "Samuel", "Katherine", "Gregory", "Christine", "Frank", "Debra",
+            "Alexander", "Rachel", "Raymond", "Catherine", "Patrick", "Carolyn", "Jack", "Janet",
+            "Dennis", "Ruth", "Jerry", "Maria", "Tyler", "Heather", "Aaron", "Diane",
+            "Jose", "Virginia", "Adam", "Julie", "Henry", "Joyce", "Nathan", "Victoria",
+            "Douglas", "Olivia", "Zachary", "Kelly", "Peter", "Christina", "Kyle", "Lauren",
+            "Ethan", "Joan", "Walter", "Evelyn", "Noah", "Megan", "Jeremy", "Cheryl",
+            "Christian", "Andrea", "Keith", "Hannah", "Roger", "Martha", "Terry", "Jacqueline",
+            "Gerald", "Frances", "Harold", "Gloria", "Sean", "Ann", "Austin", "Teresa",
+            "Carl", "Kathryn", "Arthur", "Sara", "Lawrence", "Janice", "Dylan", "Jean",
+            "Jesse", "Alice", "Jordan", "Madison", "Bruce", "Doris", "Billy", "Abigail",
+            "Joe", "Julia", "Gabriel", "Grace", "Logan", "Denise", "Albert", "Amber",
+            "Willie", "Marilyn", "Alan", "Beverly", "Juan", "Danielle", "Wayne", "Theresa",
+            "Elijah", "Sophia", "Randy", "Marie", "Roy", "Diana", "Vincent", "Brittany",
+            "Ralph", "Natalie", "Eugene", "Isabella", "Alex", "Charlotte", "Louis", "Rose",
+            "Mason", "Alexis", "Philip", "Kayla", "Bobby", "Tiffany", "Johnny", "Mia"
+        ];
+
+        const actions = [
+            { verb: "purchased", items: ["gift card", "Bitcoin", "Ethereum", "WiFi bundle", "game credits", "Amazon card"] },
+            { verb: "withdrew", items: ["to bank", "to PayPal", "to Cash App", "to Wise", "to crypto wallet"] },
+            { verb: "won", items: ["in tournament", "in mining pool", "in daily draw", "in jackpot"] },
+            { verb: "mined", items: ["Bitcoin", "Ethereum", "Monero", "USDT"] },
+            { verb: "sold", items: ["gift card", "Bitcoin", "NFT", "trading profits"] },
+            { verb: "earned", items: ["from referrals", "from gaming", "from staking", "from surveys"] }
+        ];
+
+        function generateAmount() {
+            const ranges = [[10, 99], [100, 499], [500, 999], [1000, 4999], [5000, 9999], [10000, 49999]];
+            const range = ranges[Math.floor(Math.random() * ranges.length)];
+            return Math.floor(Math.random() * (range[1] - range[0]) + range[0]).toLocaleString();
+        }
+
+        function generateTicker() {
+            const tickerContent = document.getElementById('tickerContent');
+            let html = '';
+            
+            for (let i = 0; i < 200; i++) {
+                const name = names[Math.floor(Math.random() * names.length)];
+                const action = actions[Math.floor(Math.random() * actions.length)];
+                const item = action.items[Math.floor(Math.random() * action.items.length)];
+                const amount = generateAmount();
+                
+                html += `
+                    <span class="ticker-item">
+                        <span class="ticker-dot"></span>
+                        <span class="ticker-name">${name}</span> 
+                        ${action.verb} ${item} 
+                        <span class="ticker-amount">£${amount}</span>
+                    </span>
+                `;
+            }
+            
+            tickerContent.innerHTML = html + html;
+        }
+
+        function loadUserData() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            document.getElementById('userName').textContent = userData.fullName || 'User';
+        }
+
+        // Load profile photo from localStorage
+        function loadProfilePhoto() {
+            const photo = localStorage.getItem('userProfilePhoto');
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const userName = userData.fullName || 'User';
+            
+            if (photo) {
+                document.getElementById('headerProfileImg').src = photo;
+                document.getElementById('headerProfileImg').style.display = 'block';
+                document.getElementById('headerProfilePlaceholder').style.display = 'none';
+            } else {
+                // Show initial
+                document.getElementById('profileInitial').textContent = userName.charAt(0).toUpperCase();
+            }
+        }
+
+        function goToProfile() {
+            alert('Profile page coming soon');
+        }
+
+        let balanceVisible = true;
+        function toggleBalance() {
+            const amountEl = document.getElementById('balanceAmount');
+            const eyeIcon = document.getElementById('eyeIcon');
+            balanceVisible = !balanceVisible;
+            
+            if (balanceVisible) {
+                amountEl.textContent = '£0.00';
+                eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+            } else {
+                amountEl.textContent = '•••••';
+                eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+            }
+        }
+
+        function handleAction(action) {
+            console.log(`${action} clicked`);
+        }
+
+        function setActive(element) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        window.onload = function() {
+            generateTicker();
+            loadUserData();
+            loadProfilePhoto();
+        };
+    </script>
+</body>
+</html>
